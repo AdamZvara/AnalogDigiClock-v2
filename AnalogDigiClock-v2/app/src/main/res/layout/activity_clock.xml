@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    android:background="@color/colorBlack">
+
+
+        <DigitalClock
+            android:id="@+id/digitalClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="220sp"
+            android:textColor="#008B8B"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"/>
+
+
+        <TextClock
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="65sp"
+            android:textColor="#00FF00"
+            android:format24Hour="EEEE  d. MMMM  yyyy"
+            android:layout_gravity="center_horizontal"
+            android:timeZone="GMT+01:00"/>
+
+
+        <LinearLayout
+            android:id="@+id/radia"
+            android:layout_width="960dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="100dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+                <ToggleButton
+                    android:id="@+id/tbtn_slovensko"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ToggleButton
+                    android:id="@+id/tbtn_jemne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ToggleButton
+                    android:id="@+id/tbtn_vlna"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ToggleButton
+                    android:id="@+id/tbtn_regina"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="960dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/radia"
+            android:background="@color/colorWhite"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/seekBar1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="Set Media Player Volume"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <SeekBar
+                    android:id="@+id/seekBar1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView2"
+                    android:layout_marginTop="10dp" />
+        </LinearLayout>
+
+</LinearLayout>
