@@ -1,43 +1,37 @@
 package com.example.analogdigiclock;
 
-import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AnalogClock;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DigitalClock;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
-
-import java.util.Calendar;
-
-public class ClockActivity extends AppCompatActivity {
+public class ClockActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
 
     public ToggleButton tbtn_slovensko;
     public ToggleButton tbtn_jemne;
@@ -75,6 +69,15 @@ public class ClockActivity extends AppCompatActivity {
         player = new MediaPlayer();
         t1 = (TextClock) findViewById(R.id.textClock);
 
+        Button pickerButton = (Button)findViewById(R.id.pickerButton);
+        pickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment timePicker = new TimePickerFrament();
+                timePicker.show(getSupportFragmentManager(),"time picker");
+            }
+        });
+
         initControls();
         initializeUIElements();
         change_mod();
@@ -84,10 +87,18 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        TextView textview = (TextView) findViewById(R.id.pickerView);
+        textview.setText(hourOfDay+"");
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         player.release();
     }
+
+
 
     private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
         @Override
