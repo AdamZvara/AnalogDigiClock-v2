@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="tu bude čas" />
 
             <Button
                 android:id="@+id/pickerButton"
@@ -57,6 +57,12 @@
                 android:layout_marginRight="100dp"
                 android:text="open time picker" />
 
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="200dip"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="75dp"
+                android:text="zrusit alarm" />
 
         </LinearLayout>
 

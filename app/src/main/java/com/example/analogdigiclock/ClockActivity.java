@@ -1,5 +1,7 @@
 package com.example.analogdigiclock;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,8 +11,10 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -30,6 +34,8 @@ import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Calendar;
 
 public class ClockActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
 
@@ -44,6 +50,7 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
     private AudioManager audioManager = null;
     private TextView batteryLevel;
     public LinearLayout LL_radia_seekbar;
+    private TextView mTextView;
     TextClock t1;
 
     @Override
@@ -69,12 +76,22 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
         player = new MediaPlayer();
         t1 = (TextClock) findViewById(R.id.textClock);
 
+        mTextView = (TextView) findViewById(R.id.pickerView);
+
         Button pickerButton = (Button)findViewById(R.id.pickerButton);
         pickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogFragment timePicker = new TimePickerFrament();
                 timePicker.show(getSupportFragmentManager(),"time picker");
+            }
+        });
+
+        Button buttonCancel = (Button)findViewById(R.id.cancelButton);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelAlarm();
             }
         });
 
@@ -88,8 +105,43 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        TextView textview = (TextView) findViewById(R.id.pickerView);
-        textview.setText(hourOfDay+"");
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+
+        updateTimeText(c);
+        startAlarm(c);
+    }
+
+    private void updateTimeText(Calendar c){
+        String timeText = "";
+        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+
+        mTextView.setText(timeText);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void startAlarm(Calendar c){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        if (c.before(Calendar.getInstance())){
+            c.add(Calendar.DATE, 1);
+        }
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+
+    private void cancelAlarm(){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+        mTextView.setText("nastav cas");
+
     }
 
     @Override
