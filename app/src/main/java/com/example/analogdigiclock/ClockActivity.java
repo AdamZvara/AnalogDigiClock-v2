@@ -140,7 +140,7 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,intent, 0);
 
         alarmManager.cancel(pendingIntent);
-        mTextView.setText("nastav cas");
+        mTextView.setText("--:--");
 
     }
 

@@ -12,8 +12,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".AlarmActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"
-            android:parentActivityName=".ClockActivity">
+            android:theme="@style/Translucent">
         </activity>
         <activity
             android:name=".ClockActivity"
