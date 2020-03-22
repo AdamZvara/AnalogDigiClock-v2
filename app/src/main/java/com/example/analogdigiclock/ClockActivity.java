@@ -79,12 +79,18 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
 
         mTextView = (TextView) findViewById(R.id.pickerView);
 
-        Button pickerButton = (Button)findViewById(R.id.pickerButton);//#TODO rewrite using custom dialog - inflate function
+        Button pickerButton = (Button)findViewById(R.id.cancelButton);
         pickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {                       //#TODO add days
-                openDialog();//#TODO search for setting volume of stream, dont use button on alarm but click on text
+                cancelAlarm();
+            }
+        });
 
+        mTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
             }
         });
 
@@ -93,8 +99,15 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
         initializeUIElements();
         change_mod();
         registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        changeBrightness(0f);
 
         //mediaPlayer.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+    }
+
+    public void changeBrightness(Float brightness){
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = brightness;
+        getWindow().setAttributes(lp);
     }
 
     public void openDialog(){
@@ -111,11 +124,20 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
 
 
         pickerView = (TextView)findViewById(R.id.pickerView);
-        pickerView.setText(String.valueOf(hour)+String.valueOf(minute));
+        String min = String.format("%02d", minute);
+        pickerView.setText(String.valueOf(hour)+":"+String.valueOf(min));
 
         startAlarm(c);
     }
 
+    private void cancelAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+        mTextView.setText("--:--");
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startAlarm(Calendar c){
@@ -133,6 +155,7 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
 
     @Override
     protected void onDestroy() {
+        changeBrightness(100f);
         super.onDestroy();
         player.release();
     }

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AlertDialog;
@@ -22,13 +23,7 @@ public class Dialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.layout_dialog, null);
 
         builder.setView(view)
-                .setTitle("TimePicker")
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
+                .setTitle("Nastavenie Času")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -39,6 +34,8 @@ public class Dialog extends AppCompatDialogFragment {
                     }
                 });
         timePicker = view.findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
+
 
         return builder.create();
     }

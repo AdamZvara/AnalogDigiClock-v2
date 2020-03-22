@@ -39,44 +39,42 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="776dp"
-            android:layout_height="110dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="right"
+            android:layout_marginLeft="400dp"
             android:orientation="horizontal">
+
 
             <TextView
                 android:id="@+id/pickerView"
-                android:layout_width="146dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="348dp"
-                android:layout_marginTop="12dp"
-                android:paddingLeft="40dip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="220dp"
+                android:layout_marginTop="-10dp"
+                android:clickable="true"
+                android:paddingLeft="30dip"
+                android:textColor="#A9A9A9"
                 android:text="--:--"
-                android:textSize="40dp"
+                android:textSize="60dp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/pickerButton"
-                android:layout_width="179dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:text="Nastaviť budík"
-                app:layout_constraintStart_toEndOf="@+id/pickerView"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/cancelButton"
-                android:layout_width="63dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="425dp"
+                android:layout_marginTop="10dp"
                 android:text="Z"
-                app:layout_constraintStart_toEndOf="@+id/pickerButton"
+                app:layout_constraintStart_toEndOf="@+id/pickerView"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
