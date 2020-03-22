@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-public class ClockActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
+public class ClockActivity extends AppCompatActivity implements Dialog.DialogListener {
 
     public ToggleButton tbtn_slovensko;
     public ToggleButton tbtn_jemne;
@@ -51,6 +51,7 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
     private TextView batteryLevel;
     public LinearLayout LL_radia_seekbar;
     private TextView mTextView;
+    private TextView pickerView;
     TextClock t1;
 
     @Override
@@ -78,22 +79,15 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
 
         mTextView = (TextView) findViewById(R.id.pickerView);
 
-        Button pickerButton = (Button)findViewById(R.id.pickerButton);
+        Button pickerButton = (Button)findViewById(R.id.pickerButton);//#TODO rewrite using custom dialog - inflate function
         pickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                DialogFragment timePicker = new TimePickerFrament();
-                timePicker.show(getSupportFragmentManager(),"time picker");
+            public void onClick(View v) {                       //#TODO add days
+                openDialog();//#TODO search for setting volume of stream, dont use button on alarm but click on text
+
             }
         });
 
-        Button buttonCancel = (Button)findViewById(R.id.cancelButton);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelAlarm();
-            }
-        });
 
         initControls();
         initializeUIElements();
@@ -103,23 +97,25 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
         //mediaPlayer.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
     }
 
+    public void openDialog(){
+        Dialog dialog = new Dialog();
+        dialog.show(getSupportFragmentManager(), "Dialog");
+    }
+
     @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    public void applyTexts(Integer hour, Integer minute) {
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, 0);
 
-        updateTimeText(c);
+
+        pickerView = (TextView)findViewById(R.id.pickerView);
+        pickerView.setText(String.valueOf(hour)+String.valueOf(minute));
+
         startAlarm(c);
     }
 
-    private void updateTimeText(Calendar c){
-        String timeText = "";
-        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
-
-        mTextView.setText(timeText);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startAlarm(Calendar c){
@@ -134,15 +130,6 @@ public class ClockActivity extends AppCompatActivity implements TimePickerDialog
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 
-    private void cancelAlarm(){
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,intent, 0);
-
-        alarmManager.cancel(pendingIntent);
-        mTextView.setText("--:--");
-
-    }
 
     @Override
     protected void onDestroy() {
