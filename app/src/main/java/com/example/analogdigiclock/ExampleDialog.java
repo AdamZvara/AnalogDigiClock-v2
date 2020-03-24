@@ -6,15 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-
+import android.os.CountDownTimer;
+import android.os.Handler;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
-
 import java.io.IOException;
 
 
@@ -37,13 +35,23 @@ public class ExampleDialog extends AppCompatDialogFragment {
         }
         mp.start();
 
+        new CountDownTimer(60000, 1000) { //Stop the alarm after 60 seconds
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                stopPlayer();
+            }
+        }.start();
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Budik")
                 .setPositiveButton("Vypni", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         stopPlayer();
-                        ((Activity)getContext()).finish();
                     }
 
                 });
@@ -53,12 +61,13 @@ public class ExampleDialog extends AppCompatDialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         stopPlayer();
-        ((Activity)getContext()).finish();
         super.onCancel(dialog);
     }
+
 
     public void stopPlayer(){
         mp.stop();
         mp.release();
+        ((Activity)getContext()).finish();
     }
 }

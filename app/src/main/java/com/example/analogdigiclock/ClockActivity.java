@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DigitalClock;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +54,7 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
     public LinearLayout LL_radia_seekbar;
     private TextView mTextView;
     private TextView pickerView;
+    private ToggleButton pickerButton;
     TextClock t1;
 
     @Override
@@ -79,11 +82,31 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
 
         mTextView = (TextView) findViewById(R.id.pickerView);
 
-        Button pickerButton = (Button)findViewById(R.id.cancelButton);
-        pickerButton.setOnClickListener(new View.OnClickListener() {
+        pickerButton = (ToggleButton)findViewById(R.id.toggleButton);
+        ((ToggleButton) pickerButton).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {                       //#TODO add days
-                cancelAlarm();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mTextView.getText().toString().equals("--:--")) {
+
+                } else {
+                    if (isChecked) {
+                        String text = mTextView.getText().toString();
+                        String[] separated = text.split(":");
+                        Integer hour = Integer.parseInt(separated[0]);
+                        Integer minute = Integer.parseInt(separated[1]);
+
+                        Calendar c = Calendar.getInstance();
+                        c.set(Calendar.HOUR_OF_DAY, hour);
+                        c.set(Calendar.MINUTE, minute);
+                        c.set(Calendar.SECOND, 0);
+
+                        mTextView.setTextColor(Color.parseColor("#A9A9A9"));
+                        startAlarm(c);
+                    } else {
+                        mTextView.setTextColor(Color.rgb(0, 0, 0));
+                        cancelAlarm();
+                    }
+                }
             }
         });
 
@@ -99,7 +122,7 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
         initializeUIElements();
         change_mod();
         registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        changeBrightness(0f);
+        changeBrightness(100f); //#TODO change to 0 after testing
 
         //mediaPlayer.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
     }
@@ -122,11 +145,11 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, 0);
 
-
+        //pickerButton.setChecked(true);
         pickerView = (TextView)findViewById(R.id.pickerView);
         String min = String.format("%02d", minute);
         pickerView.setText(String.valueOf(hour)+":"+String.valueOf(min));
-
+        pickerButton.setChecked(true);
         startAlarm(c);
     }
 
@@ -136,20 +159,22 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
         alarmManager.cancel(pendingIntent);
-        mTextView.setText("--:--");
+        //mTextView.setText("--:--");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startAlarm(Calendar c){
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        if (pickerButton.isChecked()== true) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, AlertReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
-        if (c.before(Calendar.getInstance())){
-            c.add(Calendar.DATE, 1);
+            if (c.before(Calendar.getInstance())) {
+                c.add(Calendar.DATE, 1);
+            }
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
         }
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 
 
