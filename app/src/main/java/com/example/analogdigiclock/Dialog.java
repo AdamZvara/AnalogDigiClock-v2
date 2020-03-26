@@ -2,9 +2,11 @@ package com.example.analogdigiclock;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TimePicker;
 
@@ -17,13 +19,11 @@ public class Dialog extends AppCompatDialogFragment {
 
     @Override
     public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_dialog, null);
 
         builder.setView(view)
-                .setTitle("Nastavenie Času")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -33,9 +33,9 @@ public class Dialog extends AppCompatDialogFragment {
                         listener.applyTexts(hour, minute);
                     }
                 });
+
         timePicker = view.findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
-
 
         return builder.create();
     }

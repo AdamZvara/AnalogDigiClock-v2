@@ -2,7 +2,6 @@ package com.example.analogdigiclock;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,33 +9,28 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DigitalClock;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Calendar;
 
 public class ClockActivity extends AppCompatActivity implements Dialog.DialogListener {
@@ -122,7 +116,7 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
         initializeUIElements();
         change_mod();
         registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        changeBrightness(100f); //#TODO change to 0 after testing
+        changeBrightness(0.2f); //#TODO change to 0 after testing
 
         //mediaPlayer.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
     }
@@ -148,7 +142,8 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
         //pickerButton.setChecked(true);
         pickerView = (TextView)findViewById(R.id.pickerView);
         String min = String.format("%02d", minute);
-        pickerView.setText(String.valueOf(hour)+":"+String.valueOf(min));
+        String h = String.format("%02d", hour);
+        pickerView.setText(h+":"+min);
         pickerButton.setChecked(true);
         startAlarm(c);
     }
@@ -202,9 +197,11 @@ public class ClockActivity extends AppCompatActivity implements Dialog.DialogLis
                 if (tbtn_mod.isChecked()) {
                     LL_radia_seekbar.setVisibility(View.INVISIBLE);
                     t1.setTextSize(45f);
+                    changeBrightness(0f);
                 } else {
                     LL_radia_seekbar.setVisibility(View.VISIBLE);
                     t1.setTextSize(65f);
+                    changeBrightness(0.2f);
                 }
             }
         });

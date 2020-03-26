@@ -18,6 +18,7 @@ import java.io.IOException;
 
 public class ExampleDialog extends AppCompatDialogFragment {
     MediaPlayer mp;
+    CountDownTimer countdown;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class ExampleDialog extends AppCompatDialogFragment {
         }
         mp.start();
 
-        new CountDownTimer(60000, 1000) { //Stop the alarm after 60 seconds
+        countdown = new CountDownTimer(60000, 1000) { //Stop the alarm after 60 seconds
 
             public void onTick(long millisUntilFinished) {
             }
@@ -52,6 +53,7 @@ public class ExampleDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         stopPlayer();
+                        countdown.cancel();
                     }
 
                 });
@@ -61,6 +63,7 @@ public class ExampleDialog extends AppCompatDialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         stopPlayer();
+        countdown.cancel();
         super.onCancel(dialog);
     }
 
